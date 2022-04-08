@@ -39,7 +39,30 @@ jobs:
         with:
           name: terraform
           path: ${{ github.workspace }}/appservice
-          
+
+
+  deploy-dev-infra:
+    name: Deploy Infra Dev
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/appservice
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}
+      AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.STORAGE_CONNSTRING }}    
+      
+      
+    environment:
+      name: dev
+    
+    needs: build
+    steps:
+      - run: ls
 
   # deploy-dev:
   #   name: Deploy Dev
