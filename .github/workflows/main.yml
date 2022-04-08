@@ -41,8 +41,8 @@ jobs:
           path: ${{ github.workspace }}/appservice
 
 
-  deploy-dev-infra:
-    name: Deploy Infra Dev
+  deploy-dev:
+    name: Deploy Dev
     runs-on: ubuntu-latest
 
     env:
