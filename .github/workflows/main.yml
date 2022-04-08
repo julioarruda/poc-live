@@ -41,10 +41,8 @@ jobs:
           path: ${{ github.workspace }}/appservice
           
 
-
-
-
-  deploy:
+  deploy-dev:
+    name: Deploy Dev
     runs-on: ubuntu-latest 
     env:
       working-directory: ${{ github.workspace }}/appservice
