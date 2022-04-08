@@ -122,5 +122,5 @@ jobs:
        - name: 'Run Azure webapp deploy'
          uses: azure/webapps-deploy@v2
          with: 
-           app-name: '${{ steps.output.outputs.appservicename }}' 
-           package: '${{ env.app-working-directory }}'
+           app-name: ${{ steps.output.outputs.appservicename }}
+           package: ${{ env.app-working-directory }}
