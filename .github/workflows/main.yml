@@ -75,13 +75,13 @@ jobs:
           name: app
           path: ${{ env.app-working-directory }}
 
-      # - name: Find and Replace
-      #   uses: jacobtomlinson/gha-find-replace@v2
-      #   with:
-      #     find: "__tfstate__"
-      #     replace: "${{ secrets.TF_STATE }}"
-      #     include: "${{ env.working-directory }}/*.tf"
-      #     regex: false
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "__tfstate__"
+          replace: "${{ secrets.TF_STATE }}"
+          include: "${{ env.working-directory }}/*.tf"
+          regex: false
 
       # - name: Install terraform
       #   uses: hashicorp/setup-terraform@v1
