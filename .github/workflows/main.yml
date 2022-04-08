@@ -14,12 +14,12 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}      
     
 
-    name: Run Infracost
+    
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - run: ls
+      
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v1
