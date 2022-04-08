@@ -18,8 +18,8 @@ resource "random_id" "randomId" {
 
 resource "azurerm_app_service_plan" "main" {
   name                = "${random_id.randomId.hex}-asp"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   kind                = "Linux"
   reserved            = true
 
@@ -31,8 +31,8 @@ resource "azurerm_app_service_plan" "main" {
 
 resource "azurerm_app_service" "main" {
   name                = "${random_id.randomId.hex}-appservice"
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_app_service_plan.main.id
 
   site_config {
