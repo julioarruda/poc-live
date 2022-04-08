@@ -59,66 +59,84 @@ jobs:
     
     needs: build
     steps:
-      - name: Download Terraform
-        uses: actions/download-artifact@v2
-        with:
-          name: terraform
-          path: ${{ env.working-directory }}
+      - run: ls
+
+  # deploy-dev:
+  #   name: Deploy Dev
+  #   runs-on: ubuntu-latest 
+  #   env:
+  #     working-directory: ${{ github.workspace }}/appservice
+  #     app-working-directory: ${{ github.workspace }}/app
+  #     ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
+  #     ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
+  #     ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+  #     ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}
+      
+  #   environment:
+  #     name: dev
+    
+  #   needs: build
+  #   steps:
+  #     - name: Download Terraform
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: terraform
+  #         path: ${{ env.working-directory }}
 
 
-      - name: Download Terraform
-        uses: actions/download-artifact@v2
-        with:
-          name: app
-          path: ${{ env.app-working-directory }}
+  #     - name: Download Terraform
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: app
+  #         path: ${{ env.app-working-directory }}
 
-      - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "__tfstate__"
-          replace: "${{ secrets.TF_STATE }}"
-          include: "${{ env.working-directory }}/*.tf"
-          regex: false
+  #     - name: Find and Replace
+  #       uses: jacobtomlinson/gha-find-replace@v2
+  #       with:
+  #         find: "__tfstate__"
+  #         replace: "${{ secrets.TF_STATE }}"
+  #         include: "${{ env.working-directory }}/*.tf"
+  #         regex: false
 
-      - name: Install terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_wrapper: false     
+  #     - name: Install terraform
+  #       uses: hashicorp/setup-terraform@v1
+  #       with:
+  #         terraform_wrapper: false     
 
-      - name: Terraform init
-        run: terraform init
-        working-directory: ${{ env.working-directory }}
+  #     - name: Terraform init
+  #       run: terraform init
+  #       working-directory: ${{ env.working-directory }}
 
-      - name: Terraform plan
-        run: terraform plan -out tfplan.binary
-        working-directory: ${{ env.working-directory }}
+  #     - name: Terraform plan
+  #       run: terraform plan -out tfplan.binary
+  #       working-directory: ${{ env.working-directory }}
 
-      - name: Terraform show
-        run: terraform show -json tfplan.binary > plan.json
-        working-directory: ${{ env.working-directory }}
+  #     - name: Terraform show
+  #       run: terraform show -json tfplan.binary > plan.json
+  #       working-directory: ${{ env.working-directory }}
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
-        working-directory: ${{ env.working-directory }}      
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve
+  #       working-directory: ${{ env.working-directory }}      
 
-      - name: get output
-        id: output
-        run: |
-          output=$(terraform output app_service_name)
-          echo $output
-          echo "::set-output name=appservicename::$output"
-        working-directory: ${{ env.working-directory }}
+  #     - name: get output
+  #       id: output
+  #       run: |
+  #         output=$(terraform output app_service_name)
+  #         echo $output
+  #         echo "::set-output name=appservicename::$output"
+  #       working-directory: ${{ env.working-directory }}
 
-      - name: 'Az login'
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.TF_ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.TF_ARM_TENNANT_ID }}
-          subscription-id: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+  #     - name: 'Az login'
+  #       uses: azure/login@v1
+  #       with:
+  #         client-id: ${{ secrets.TF_ARM_CLIENT_ID }}
+  #         tenant-id: ${{ secrets.TF_ARM_TENNANT_ID }}
+  #         subscription-id: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
 
-       - name: 'Run Azure webapp deploy action using publish profile credentials'
-         uses: azure/webapps-deploy@v2
-         id: app-web
-         with: 
-           app-name: '${{ steps.output.outputs.appservicename }}' 
-           package: '${{ env.app-working-directory }}'
+  #      - name: 'Run Azure webapp deploy action using publish profile credentials'
+  #        uses: azure/webapps-deploy@v2
+  #        id: app-web
+  #        with: 
+  #          app-name: '${{ steps.output.outputs.appservicename }}' 
+  #          package: '${{ env.app-working-directory }}'
