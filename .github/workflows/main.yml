@@ -112,15 +112,12 @@ jobs:
           echo "::set-output name=appservicename::$output"
         working-directory: ${{ env.working-directory }}
 
-      - name: 'Az login'
-        uses: azure/login@v1
+      - uses: azure/login@v1
         with:
-          client-id: ${{ secrets.TF_ARM_CLIENT_ID }}
-          tenant-id: ${{ secrets.TF_ARM_TENNANT_ID }}
-          subscription-id: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-       - name: 'Run Azure webapp deploy'
-         uses: azure/webapps-deploy@v2
-         with: 
-           app-name: ${{ steps.tfoutput.outputs.appservicename }}
-           package: ${{ env.app-working-directory }}
+      - name: 'Run Azure webapp deploy'
+        uses: azure/webapps-deploy@v2
+        with: 
+          app-name: ${{ steps.tfoutput.outputs.appservicename }}
+          package: ${{ env.app-working-directory }}
