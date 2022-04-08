@@ -80,7 +80,6 @@ jobs:
         with:
           find: "__tfstate__"
           replace: "${{ secrets.TF_STATE }}"
-          include: "${{ env.working-directory }}/*.tf"
           regex: false
 
       - name: Install terraform
