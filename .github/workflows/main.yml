@@ -46,3 +46,4 @@ jobs:
         run: |
           output=$(terraform output app_service_name)
           echo $output
+        working-directory: ${{ env.working-directory }}
