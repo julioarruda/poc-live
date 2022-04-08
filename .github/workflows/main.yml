@@ -112,7 +112,7 @@ jobs:
         working-directory: ${{ env.working-directory }}
 
       - name: Sleep for 30 seconds
-        run: sleep 30s
+        run: sleep 60s
         
       - uses: azure/login@v1
         with:
