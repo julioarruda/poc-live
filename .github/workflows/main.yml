@@ -111,6 +111,9 @@ jobs:
           echo "::set-output name=appservicename::$output"
         working-directory: ${{ env.working-directory }}
 
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
