@@ -105,7 +105,7 @@ jobs:
         working-directory: ${{ env.working-directory }}      
 
       - name: get output
-        id: output
+        id: tfoutput
         run: |
           output=$(terraform output app_service_name)
           echo $output
@@ -122,5 +122,5 @@ jobs:
        - name: 'Run Azure webapp deploy'
          uses: azure/webapps-deploy@v2
          with: 
-           app-name: ${{ steps.output.outputs.appservicename }}
+           app-name: ${{ steps.tfoutput.outputs.appservicename }}
            package: ${{ env.app-working-directory }}
