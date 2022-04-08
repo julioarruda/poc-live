@@ -62,12 +62,14 @@ jobs:
       - run: ls
 
       - name: Download Terraform
+        id: pkgterraform
         uses: actions/download-artifact@v2
         with:
           name: terraform
           path: ${{ env.working-directory }}
 
       - name: Download App
+        id: pkgApp
         uses: actions/download-artifact@v2
         with:
           name: app
