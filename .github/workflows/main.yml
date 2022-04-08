@@ -59,7 +59,6 @@ jobs:
       name: dev
     
     steps:
-
       - name: Download Terraform
         uses: actions/download-artifact@v2
         with:
