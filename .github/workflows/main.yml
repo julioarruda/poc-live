@@ -1,0 +1,46 @@
+name: DeployTerraform
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  infracost:
+    runs-on: ubuntu-latest 
+    env:
+      working-directory: ${{ github.workspace }}/appservice
+      ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}      
+    
+
+    name: Run Infracost
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false     
+
+      - name: Terraform init
+        run: terraform init
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform plan
+        run: terraform plan -out tfplan.binary
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform show
+        run: terraform show -json tfplan.binary > plan.json
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.working-directory }}      
+
+      - name: get output
+        run: |
+          output=$(terraform output app_service_name)
+          echo $output
