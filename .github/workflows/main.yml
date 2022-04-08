@@ -68,12 +68,7 @@ jobs:
           name: terraform
           path: ${{ env.working-directory }}
 
-      - name: Download App
-        id: pkgApp
-        uses: actions/download-artifact@v2
-        with:
-          name: app
-          path: ${{ env.app-working-directory }}
+
 
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
