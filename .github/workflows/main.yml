@@ -61,6 +61,12 @@ jobs:
     steps:
       - run: ls
 
+      - name: Download Terraform
+        uses: actions/download-artifact@v2
+        with:
+          name: terraform
+          path: ${{ env.working-directory }}
+
   # deploy-dev:
   #   name: Deploy Dev
   #   runs-on: ubuntu-latest 
