@@ -67,7 +67,7 @@ jobs:
           name: terraform
           path: ${{ env.working-directory }}
 
-      - name: Download Terraform
+      - name: Download App
         uses: actions/download-artifact@v2
         with:
           name: app
