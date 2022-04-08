@@ -7,17 +7,8 @@ resource "azurerm_resource_group" "rg" {
   location  = var.resource_group_location
 }
 
-resource "random_id" "randomId" {
-  keepers = {
-    # Generate a new ID only when a new resource group is defined
-    resource_group = azurerm_resource_group.rg.name
-  }
-
-  byte_length = 8
-}
-
 resource "azurerm_app_service_plan" "main" {
-  name                = "${random_id.randomId.hex}-asp"
+  name                = "${random_pet.rg-name.id}-asp"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   kind                = "Linux"
@@ -30,7 +21,7 @@ resource "azurerm_app_service_plan" "main" {
 }
 
 resource "azurerm_app_service" "main" {
-  name                = "${random_id.randomId.hex}-appservice"
+  name                = "${random_pet.rg-name.id}-appservice"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   app_service_plan_id = azurerm_app_service_plan.main.id
