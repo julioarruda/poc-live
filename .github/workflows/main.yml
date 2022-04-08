@@ -119,9 +119,9 @@ jobs:
           tenant-id: ${{ secrets.TF_ARM_TENNANT_ID }}
           subscription-id: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
 
-      #  - name: 'Run Azure webapp deploy action using publish profile credentials'
-      #    uses: azure/webapps-deploy@v2
-      #    id: app-web
-      #    with: 
-      #      app-name: '${{ steps.output.outputs.appservicename }}' 
-      #      package: '${{ env.app-working-directory }}'
+       - name: 'Run Azure webapp deploy action using publish profile credentials'
+         uses: azure/webapps-deploy@v2
+         id: app-web
+         with: 
+           app-name: '${{ steps.output.outputs.appservicename }}' 
+           package: '${{ env.app-working-directory }}'
