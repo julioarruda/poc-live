@@ -5,21 +5,81 @@ on:
   
 jobs:
   build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2   
+
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+      - name: Dotnet Publish
+        run: dotnet publish --configuration Release -o ${{ github.workspace }}/demo 
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: ${{ github.workspace }}//demo
+
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: terraform
+          path: ${{ github.workspace }}/appservice
+          
+
+
+
+
+  deploy:
     runs-on: ubuntu-latest 
     env:
       working-directory: ${{ github.workspace }}/appservice
+      app-working-directory: ${{ github.workspace }}/app
       ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}      
+      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}
+          
     
-
+    environment:
+      name: dev
     
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
 
-      
+      - name: Download Terraform
+        uses: actions/download-artifact@v2
+        with:
+          name: terraform
+          path: ${{ env.working-directory }}
+
+
+      - name: Download Terraform
+        uses: actions/download-artifact@v2
+        with:
+          name: app
+          path: ${{ env.app-working-directory }}
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "__tfstate__"
+          replace: "${{ secrets.TF_STATE }}"
+          include: "${{ env.working-directory }}/*.tf"
+          regex: false
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v1
@@ -43,7 +103,23 @@ jobs:
         working-directory: ${{ env.working-directory }}      
 
       - name: get output
+        id: output
         run: |
           output=$(terraform output app_service_name)
           echo $output
+          echo "::set-output name=appservicename::$output"
         working-directory: ${{ env.working-directory }}
+
+      - name: 'Az login'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.TF_ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.TF_ARM_TENNANT_ID }}
+          subscription-id: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+
+       - name: 'Run Azure webapp deploy action using publish profile credentials'
+         uses: azure/webapps-deploy@v2
+         id: app-web
+         with: 
+           app-name: '${{ steps.output.outputs.appservicename }}' 
+           package: '${{ env.app-working-directory }}'
