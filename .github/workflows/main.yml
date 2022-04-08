@@ -88,29 +88,29 @@ jobs:
         with:
           terraform_wrapper: false     
 
-      # - name: Terraform init
-      #   run: terraform init
-      #   working-directory: ${{ env.working-directory }}
+      - name: Terraform init
+        run: terraform init
+        working-directory: ${{ env.working-directory }}
 
-      # - name: Terraform plan
-      #   run: terraform plan -out tfplan.binary
-      #   working-directory: ${{ env.working-directory }}
+      - name: Terraform plan
+        run: terraform plan -out tfplan.binary
+        working-directory: ${{ env.working-directory }}
 
-      # - name: Terraform show
-      #   run: terraform show -json tfplan.binary > plan.json
-      #   working-directory: ${{ env.working-directory }}
+      - name: Terraform show
+        run: terraform show -json tfplan.binary > plan.json
+        working-directory: ${{ env.working-directory }}
 
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
-      #   working-directory: ${{ env.working-directory }}      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.working-directory }}      
 
-      # - name: get output
-      #   id: output
-      #   run: |
-      #     output=$(terraform output app_service_name)
-      #     echo $output
-      #     echo "::set-output name=appservicename::$output"
-      #   working-directory: ${{ env.working-directory }}
+      - name: get output
+        id: output
+        run: |
+          output=$(terraform output app_service_name)
+          echo $output
+          echo "::set-output name=appservicename::$output"
+        working-directory: ${{ env.working-directory }}
 
       # - name: 'Az login'
       #   uses: azure/login@v1
