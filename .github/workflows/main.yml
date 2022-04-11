@@ -106,15 +106,15 @@ jobs:
       - name: get output
         id: tfoutput
         run: |
-          output=$(terraform output app_service_name)
-          rgname=$(terraform output rg_name)
+          output=$(terraform output app_service_name | tr -d '"' )
+          rgname=$(terraform output rg_name | tr -d '"' )
           echo $output
           echo "::set-output name=appservicename::$output"
           echo "::set-output name=rgname::$rgname"
         working-directory: ${{ env.working-directory }}
 
-      - name: Sleep for 30 seconds
-        run: sleep 60s
+      # - name: Sleep for 30 seconds
+      #   run: sleep 60s
         
       - uses: azure/login@v1
         with:
