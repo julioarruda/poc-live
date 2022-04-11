@@ -22,8 +22,9 @@ jobs:
         with:
           find: "__tfstate__"
           replace: "${{ secrets.TF_STATE }}"
+          include: "${{ env.working-directory }}/**"
           regex: false
-        working-directory: ${{ env.working-directory }}
+        
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v1
