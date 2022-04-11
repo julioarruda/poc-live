@@ -60,8 +60,6 @@ jobs:
     
     needs: build
     steps:
-      - run: ls
-
       - name: Download Terraform
         id: pkgterraform
         uses: actions/download-artifact@v2
