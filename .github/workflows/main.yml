@@ -122,12 +122,12 @@ jobs:
 
       - name: Get Publish Profile
         run: |
-          echo "::set-output name=PUBLISH_PROFILE::$(az webapp deployment list-publishing-profiles -g '${{ steps.tfoutput.outputs.rgname }}' -n '${{ steps.tfoutput.outputs.appservicename }}' --xml)"
+          echo "::set-output name=PUBLISH_PROFILE::$(az webapp deployment list-publishing-profiles -g ${{ steps.tfoutput.outputs.rgname }} -n ${{ steps.tfoutput.outputs.appservicename }} --xml)"
         id: getPublishProfile
 
       - name: 'Run Azure webapp deploy'
         uses: azure/webapps-deploy@v2
         with: 
-          app-name: '${{ steps.tfoutput.outputs.appservicename }}'
+          app-name: ${{ steps.tfoutput.outputs.appservicename }}
           publish-profile: ${{ steps.getPublishProfile.outputs.PUBLISH_PROFILE }}
           package: ${{ env.app-working-directory }}
