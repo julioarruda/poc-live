@@ -17,14 +17,8 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          find: "__tfstate__"
-          replace: "${{ secrets.TF_STATE }}"
-          include: "${{ env.working-directory }}/**"
-          regex: false
-        
+      - run: |
+          sed -i 's/__tfstate__/${{ secrets.TF_STATE }}/' ${{ env.working-directory }}/providers.tf        
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v1
