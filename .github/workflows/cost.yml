@@ -1,0 +1,64 @@
+on: 
+  pull_request
+  workflow_dispatch:
+
+jobs:
+  infracost:
+    runs-on: ubuntu-latest 
+    env:
+      working-directory: ${{ github.workspace }}/appservice 
+      ARM_CLIENT_ID: ${{ secrets.TF_ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.TF_ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}      
+    
+
+    name: Run Infracost
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "__tfstate__"
+          replace: "${{ secrets.TF_STATE }}"
+          regex: false
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false 
+
+      - name: Terraform init
+        run: terraform init
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform plan
+        run: terraform plan -out tfplan.binary
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform show
+        run: terraform show -json tfplan.binary > plan.json
+        working-directory: ${{ env.working-directory }}
+
+      - name: Terraform show
+        run: terraform apply -auto-approve
+        working-directory: ${{ env.working-directory }}        
+
+
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v1
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      - name: Generate Infracost JSON
+        run: infracost breakdown --path plan.json --format json --out-file /tmp/infracost.json
+        working-directory: ${{ env.working-directory }}
+      - name: Post Infracost comment
+        run: |
+          infracost comment github --path /tmp/infracost.json \
+                                   --repo $GITHUB_REPOSITORY \
+                                   --github-token ${{github.token}} \
+                                   --pull-request ${{github.event.pull_request.number}} \
+                                   --behavior new
