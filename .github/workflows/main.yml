@@ -129,5 +129,12 @@ jobs:
         uses: azure/webapps-deploy@v2
         with: 
           app-name: ${{ steps.tfoutput.outputs.appservicename }}
-          publish-profile: ${{ steps.getPublishProfile.outputs.PUBLISH_PROFILE }}
           package: ${{ env.app-working-directory }}
+
+
+      # - name: 'Run Azure webapp deploy'
+      #   uses: azure/webapps-deploy@v2
+      #   with: 
+      #     app-name: ${{ steps.tfoutput.outputs.appservicename }}
+      #     publish-profile: ${{ steps.getPublishProfile.outputs.PUBLISH_PROFILE }}
+      #     package: ${{ env.app-working-directory }}
