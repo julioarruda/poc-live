@@ -56,6 +56,7 @@ jobs:
       
     environment:
       name: dev
+      url:  ${{ steps.webapp.outputs.webapp-url }}
     
     needs: build
     steps:
@@ -120,6 +121,7 @@ jobs:
 
       - name: 'Run Azure webapp deploy'
         uses: azure/webapps-deploy@v2
+        id: webapp
         with: 
           app-name: ${{ steps.tfoutput.outputs.appservicename }}
           package: ${{ env.app-working-directory }}
