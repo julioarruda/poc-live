@@ -1,3 +1,4 @@
+name: Run Infracost
 on: 
   workflow_dispatch:
 
@@ -12,7 +13,6 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}      
     
 
-    name: Run Infracost
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
