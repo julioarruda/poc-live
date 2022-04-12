@@ -12,13 +12,19 @@ jobs:
       ARM_SUBSCRIPTION_ID: ${{ secrets.TF_ARM_SUBSCRIPTION_ID }}
       ARM_TENANT_ID: ${{ secrets.TF_ARM_TENNANT_ID }}      
     
-
+    environment:
+      name: dev
+      
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - run: |
-          sed -i 's/__tfstate__/${{ secrets.TF_STATE }}/' ${{ env.working-directory }}/providers.tf        
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          find: "__tfstate__"
+          replace: "${{ secrets.TF_STATE }}"
+          regex: false       
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v1
